@@ -12,6 +12,71 @@
     <link rel="stylesheet" href="libs/font-awesome/css/font-awesome.min.css">
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/styles.css" rel="stylesheet">
+    <style>
+    @media (max-width: 768px) {
+        #lead {
+            min-height: 60vh;
+            height: 60vh;
+            max-height: 70vh;
+        }
+        #lead-content {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 100vw;
+            z-index: 10;
+            text-align: center;
+            background: rgba(30,30,30,0.7);
+            backdrop-filter: blur(8px);
+            border-radius: 0 0 16px 16px;
+            padding: 16px 0 8px 0;
+        }
+        #lead-content h1, #lead-content h2, #lead-content a {
+            color: #fff;
+        }
+        #mobile-menu-open {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 100;
+        }
+        header.glass {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            z-index: 99;
+        }
+        nav {
+            display: none;
+        }
+        header.open nav {
+            display: block;
+            background: rgba(30,30,30,0.95);
+            position: fixed;
+            top: 56px;
+            left: 0;
+            width: 100vw;
+            padding: 24px 0;
+        }
+        #menu {
+            flex-direction: column;
+            text-align: center;
+        }
+        #menu li {
+            margin: 16px 0;
+        }
+        #mobile-menu-close {
+            display: block;
+            position: absolute;
+            top: 8px;
+            right: 24px;
+            color: #fff;
+            cursor: pointer;
+            z-index: 101;
+        }
+    }
+    </style>
 </head>
 
 <body>
@@ -20,7 +85,7 @@
     </div>
     <!-- End #mobile-menu-toggle -->
     <header class="glass">
-        <div id="mobile-menu-close">
+        <div id="mobile-menu-close" style="display:none;">
             <span>Close</span> <i class="fa fa-times" aria-hidden="true"></i>
         </div>
         <nav>
@@ -282,6 +347,40 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="js/scripts.min.js"></script>
     <script src="js/physics-sim.js"></script>
+    <script>
+    // Mobile menu toggle logic
+    const mobileMenuOpen = document.getElementById('mobile-menu-open');
+    const mobileMenuClose = document.getElementById('mobile-menu-close');
+    const header = document.querySelector('header');
+    mobileMenuOpen.addEventListener('click', function() {
+        header.classList.add('open');
+        mobileMenuClose.style.display = 'block';
+    });
+    mobileMenuClose.addEventListener('click', function() {
+        header.classList.remove('open');
+        mobileMenuClose.style.display = 'none';
+    });
+    // Hide lead content only if scrolled past lead on mobile
+    function handleLeadContentVisibility() {
+        const leadContent = document.getElementById('lead-content');
+        if (window.innerWidth <= 768) {
+            const leadRect = document.getElementById('lead').getBoundingClientRect();
+            if (leadRect.bottom < 80) {
+                leadContent.style.opacity = '0';
+                leadContent.style.pointerEvents = 'none';
+            } else {
+                leadContent.style.opacity = '1';
+                leadContent.style.pointerEvents = 'auto';
+            }
+        } else {
+            document.getElementById('lead-content').style.opacity = '1';
+            document.getElementById('lead-content').style.pointerEvents = 'auto';
+        }
+    }
+    window.addEventListener('scroll', handleLeadContentVisibility);
+    window.addEventListener('resize', handleLeadContentVisibility);
+    document.addEventListener('DOMContentLoaded', handleLeadContentVisibility);
+    </script>
 </body>
 
 </html>
